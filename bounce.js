@@ -2,14 +2,15 @@ console.log('bounce.js loaded');
 
 var svgNSID = "http://www.w3.org/2000/svg";
 
+var startButton = document.getElementById('start');
+var stopButton = document.getElementById('stop');
+var clearButton = document.getElementById('clear');
 var svg = document.getElementById('castle');
 var width = svg.getAttribute('width');
 var height = svg.getAttribute('height');
 var max_r = 50;
 var max_v = 5;
-
-console.log(width);
-console.log(height);
+var intervalID;
 
 var balls = new Array();
 
@@ -63,6 +64,16 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
     };
 }
 
+
+var start = function(){
+    var animate = function() {
+        for (var i = 0 ; i < balls.length ; i++) {
+            balls[i].move();
+        }
+    }
+    intervalID = window.setInterval(animate,16);
+};
+
 var main = function() {
 
     for (var i = 0 ; i < 10 ; i++) {
@@ -76,13 +87,21 @@ var main = function() {
                              Math.floor(dy));
     }
 
-    var animate = function() {
-        for (var i = 0 ; i < balls.length ; i++) {
-            balls[i].move();
-        }
-    }
-
-    intervalID = window.setInterval(animate, 16);
+    start();
 }
 
+var stop = function(){
+    window.clearInterval(intervalID);
+};
+
+var clear = function(){
+    while (svg.lastChild){
+	svg.removeChild(svg.lastChild);
+    }
+    //svg.selectAll("*").remove();
+};
+
+startButton.addEventListener('click',start);
+stopButton.addEventListener('click',stop);
+clearButton.addEventListener('click',clear);
 main();
