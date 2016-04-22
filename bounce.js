@@ -55,6 +55,11 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         c.setAttribute('cy', gety() + dy);
     };
 
+    var click_delete = function(e){
+	e.preventDefault();
+	svg.removeChild(this);
+    };
+    c.addEventListener("click",click_delete);
 
     return {
         getx : getx,
@@ -105,3 +110,8 @@ startButton.addEventListener('click',start);
 stopButton.addEventListener('click',stop);
 clearButton.addEventListener('click',clear);
 main();
+
+var click_for_ball = function(e){
+    e.preventDefault();
+    
+};
