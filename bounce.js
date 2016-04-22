@@ -1,4 +1,4 @@
-console.log('bounce.js loaded');
+//console.log('bounce.js loaded');
 
 var svgNSID = "http://www.w3.org/2000/svg";
 
@@ -56,6 +56,15 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
 
     var getdy = function() {
         return dy;
+    }
+
+    var getcolor = function() {
+        return c.getAttribute('fill');
+    }
+
+    var setcolor = function(color) {
+        c.setAttribute('fill', color);
+        return color;
     }
 
     var update_vel_list = function(a) {
@@ -118,6 +127,14 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         c.setAttribute('cy', fy);
     };
 
+    var setdx = function(dx) {
+        this.dx = dx;
+    };
+
+    var setdy = function(dy) {
+        this.dy = dy;
+    };
+
     var click_delete = function(e){
         e.preventDefault();
         deleting = true;
@@ -141,6 +158,10 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         move : move,
         getdx : getdx,
         getdy : getdy,
+        setdx : setdx,
+        setdy : setdy,
+        getcolor : getcolor,
+        setcolor: setcolor,
     };
 }
 
@@ -170,8 +191,8 @@ var start = function(){
             totalke += 0.5 * balls[i].getr() * balls[i].getr() * (balls[i].getdx() * balls[i].getdx() + balls[i].getdy() * balls[i].getdy());
         }
 
-        console.log("Total momentum: <" + totalpx + ', ' + totalpy + ">");
-        console.log("Total KE: " + totalke);
+        //console.log("Total momentum: <" + totalpx + ', ' + totalpy + ">");
+        //console.log("Total KE: " + totalke);
     }
     intervalID = window.setInterval(animate,16);
 };
@@ -212,6 +233,32 @@ var click_for_ball = function(e){
 	make_random_ball(e.offsetX,e.offsetY);
 
 };
+
+var double_speed = function() {
+    while (svg.lastChild){
+        svg.removeChild(svg.lastChild);
+    }
+    balls = balls.map(function(ball) {
+        return make_ball(ball.getx(), ball.gety(), ball.getr(), ball.getcolor(), ball.getdx() * 2, ball.getdy() * 2);
+    })
+}
+
+var half_speed = function() {
+     while (svg.lastChild){
+        svg.removeChild(svg.lastChild);
+    }
+    balls = balls.map(function(ball) {
+        return make_ball(ball.getx(), ball.gety(), ball.getr(), ball.getcolor(), ball.getdx() / 2, ball.getdy() / 2);
+    });
+}
+
+var kill_the_weak = function(minr) {
+    balls = balls.filter(function(ball) {
+        console.log(ball.getr());
+        return ball.getr() < minr;
+    })
+    console.log(balls);
+}
 
 svg.addEventListener('click',click_for_ball);
 
