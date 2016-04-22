@@ -11,6 +11,7 @@ var height = svg.getAttribute('height');
 var max_r = 50;
 var max_v = 5;
 var intervalID;
+var deleting = false;
 
 var balls = new Array();
 
@@ -91,8 +92,9 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
     };
 
     var click_delete = function(e){
-        e.preventDefault();
-        svg.removeChild(this);
+	e.preventDefault();
+	deleting = true;
+	svg.removeChild(this);
     };
     c.addEventListener("click",click_delete);
 
@@ -156,7 +158,10 @@ main();
 
 var click_for_ball = function(e){
     e.preventDefault();
-    make_random_ball(e.offsetX,e.offsetY);
+    if (deleting)
+	deleting = false;
+    else
+	make_random_ball(e.offsetX,e.offsetY);
 
 };
 
