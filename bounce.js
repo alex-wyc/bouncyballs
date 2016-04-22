@@ -152,9 +152,11 @@ stopButton.addEventListener('click',stop);
 clearButton.addEventListener('click',clear);
 main();
 
-/*
+
 var click_for_ball = function(e){
     e.preventDefault();
-    make_ball(e.offsetX,e.offsetY,
+    make_random_ball(e.offsetX,e.offsetY);
 };
-*/
+
+svg.addEventListener('click',click_for_ball);
+
