@@ -72,10 +72,12 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
             else {
                 if (Math.pow(getx() - other.getx(), 2) + Math.pow(gety() - other.gety(), 2) <= Math.pow(getr() + other.getr(), 2)) { // dist between centers less than sum of radiuses
                     // PHYSICS
-                    //dx = (2 * other.getr() / (getr() + other.getr())) * other.getdx() - (other.getr() - getr()) * dx / (other.getr() + getr());
-                    //dy = (2 * other.getr() / (getr() + other.getr())) * other.getdy() - (other.getr() - getr()) * dy / (other.getr() + getr());
-                    dxs[a] = (dx * (getr() - other.getr()) + 2 * other.getr() * other.getdx()) / (getr() + other.getr());
-                    dys[a] = (dy * (getr() - other.getr()) + 2 * other.getr() * other.getdy()) / (getr() + other.getr());
+                    //var m1 = getr() * getr();
+                    //var m2 = other.getr() * other.getr();
+                    //dxs[a] = (dx * (m1 - m2) + 2 * m2 * other.getdx()) / (m1 + m2);
+                    //dys[a] = (dy * (m1 - m2) + 2 * m2 * other.getdy()) / (m1 + m2);
+                    dxs[a] = -1 * dx;
+                    dys[a] = -1 * dy;
                 }
             }
         }
@@ -97,15 +99,37 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
     }
 
     var move = function() {
-        c.setAttribute('cx', getx() + dx);
-        c.setAttribute('cy', gety() + dy);
+        var fx = getx() + dx;
+        //if (fx > width) {
+        //    fx = fx - width;
+        //}
+        //if (fx < 0) {
+        //    fx = width - fx;
+        //}
+
+        var fy = gety() + dy;
+        //if (fy > height) {
+        //    fy = fy - height;
+        //}
+        //if (fy < 0) {
+        //    fy = width - fy;
+        //}
+        c.setAttribute('cx', fx);
+        c.setAttribute('cy', fy);
     };
 
     var click_delete = function(e){
-	e.preventDefault();
-	deleting = true;
-	svg.removeChild(this);
+        e.preventDefault();
+        deleting = true;
+        svg.removeChild(this);
+        for (var i = 0 ; i < balls.length ; i++) {
+            if (balls[i].getx() == getx() && balls[i].gety() == gety()) {
+                balls.splice(i, 1);
+                break;
+            }
+        }
     };
+    
     c.addEventListener("click",click_delete);
 
     return {
@@ -134,11 +158,20 @@ var make_random_ball = function(xi,yi){
 
 var start = function(){
     var animate = function() {
+        var totalpx = 0;
+        var totalpy = 0;
+        var totalke = 0;
         for (var i = 0 ; i < balls.length ; i++) {
             balls[i].update_vel_list(i);
             balls[i].update_vel(i);
             balls[i].move();
+            totalpx += balls[i].getr() * balls[i].getr() * balls[i].getdx();
+            totalpy += balls[i].getr() * balls[i].getr() * balls[i].getdy();
+            totalke += 0.5 * balls[i].getr() * balls[i].getr() * (balls[i].getdx() * balls[i].getdx() + balls[i].getdy() * balls[i].getdy());
         }
+
+        console.log("Total momentum: <" + totalpx + ', ' + totalpy + ">");
+        console.log("Total KE: " + totalke);
     }
     intervalID = window.setInterval(animate,16);
 };
@@ -161,6 +194,7 @@ var clear = function(){
     while (svg.lastChild){
         svg.removeChild(svg.lastChild);
     }
+    balls = [];
     //svg.selectAll("*").remove();
 };
 
