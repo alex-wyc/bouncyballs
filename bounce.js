@@ -47,8 +47,42 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         return parseInt(c.getAttribute('r'), 10);
     };
 
+    var getdx = function() {
+        return dx;
+    }
+
+    var getdy = function() {
+        return dy;
+    }
+
     var move = function() {
         // collision detection
+        // border detection
+        if ((getx() < getr() && dx < 0) || (getx() > width - getr() && dx > 0)) {
+            dx = -1 * dx;
+        }
+
+        if ((gety() < getr() && dy < 0) || (gety() > width - getr() && dy > 0)) {
+            dy = -1 * dy;
+        }
+
+        // with other balls
+
+        for (var i = 0 ; i < balls.length ; i++) {
+            var other = balls[i];
+            if (getx() == other.getx() && gety() == other.gety()) {
+                continue;
+            }
+            else {
+                if (Math.pow(getx() - other.getx(), 2) + Math.pow(gety() - other.gety(), 2) <= Math.pow(getr() + other.getr(), 2)) { // dist between centers less than sum of radiuses
+                    // PHYSICS
+                    //dx = (2 * other.getr() / (getr() + other.getr())) * other.getdx() - (other.getr() - getr()) * dx / (other.getr() + getr());
+                    //dy = (2 * other.getr() / (getr() + other.getr())) * other.getdy() - (other.getr() - getr()) * dy / (other.getr() + getr());
+                    dx = -1 * dx;
+                    dy = -1 * dy;
+            }
+            }
+        }
 
         // actual mvt
         c.setAttribute('cx', getx() + dx);
@@ -66,6 +100,8 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         gety : gety,
         getr : getr,
         move : move,
+        getdx : getdx,
+        getdy : getdy,
     };
 }
 
