@@ -14,6 +14,8 @@ var intervalID;
 var deleting = false;
 
 var balls = new Array();
+var dxs = new Array();
+var dys = new Array();
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF'.split('');
@@ -56,22 +58,15 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         return dy;
     }
 
-    var move = function() {
+    var update_vel_list = function(a) {
+        dxs[a] = dx;
+        dys[a] = dy;
         // collision detection
-        // border detection
-        if ((getx() < getr() && dx < 0) || (getx() > width - getr() && dx > 0)) {
-            dx = -1 * dx;
-        }
-
-        if ((gety() < getr() && dy < 0) || (gety() > width - getr() && dy > 0)) {
-            dy = -1 * dy;
-        }
-
         // with other balls
 
         for (var i = 0 ; i < balls.length ; i++) {
             var other = balls[i];
-            if (getx() == other.getx() && gety() == other.gety()) {
+            if (i == a) {
                 continue;
             }
             else {
@@ -79,14 +74,29 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
                     // PHYSICS
                     //dx = (2 * other.getr() / (getr() + other.getr())) * other.getdx() - (other.getr() - getr()) * dx / (other.getr() + getr());
                     //dy = (2 * other.getr() / (getr() + other.getr())) * other.getdy() - (other.getr() - getr()) * dy / (other.getr() + getr());
-                    dx = -1 * dx;
-                    dy = -1 * dy;
-                    dx = (dx * (getr() - other.getr()) + 2 * other.getr() * other.getdx())
+                    dxs[a] = (dx * (getr() - other.getr()) + 2 * other.getr() * other.getdx()) / (getr() + other.getr());
+                    dys[a] = (dy * (getr() - other.getr()) + 2 * other.getr() * other.getdy()) / (getr() + other.getr());
                 }
             }
         }
+        // border detection
+        if ((getx() < getr() && dx < 0) || (getx() > width - getr() && dx > 0)) {
+            dxs[a] = -1 * dx;
+        }
 
-        // actual mvt
+        if ((gety() < getr() && dy < 0) || (gety() > width - getr() && dy > 0)) {
+            dys[a] = -1 * dy;
+        }
+
+
+    }
+
+    var update_vel = function(a) {
+        dx = dxs[a];
+        dy = dys[a];
+    }
+
+    var move = function() {
         c.setAttribute('cx', getx() + dx);
         c.setAttribute('cy', gety() + dy);
     };
@@ -102,6 +112,8 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         getx : getx,
         gety : gety,
         getr : getr,
+        update_vel_list : update_vel_list,
+        update_vel : update_vel,
         move : move,
         getdx : getdx,
         getdy : getdy,
@@ -123,6 +135,8 @@ var make_random_ball = function(xi,yi){
 var start = function(){
     var animate = function() {
         for (var i = 0 ; i < balls.length ; i++) {
+            balls[i].update_vel_list(i);
+            balls[i].update_vel(i);
             balls[i].move();
         }
     }
