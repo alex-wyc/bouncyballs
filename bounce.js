@@ -106,6 +106,17 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
 }
 
 
+var make_random_ball = function(xi,yi){
+    var dx = Math.random() < 0.5 ? -Math.random() * max_v : Math.random() * max_v;
+    var dy = Math.random() < 0.5 ? -Math.random() * max_v : Math.random() * max_v;
+    balls[balls.length] = make_ball(xi,
+				    yi,
+				    Math.floor(Math.random() * max_r),
+				    getRandomColor(),
+				    Math.floor(dx),
+				    Math.floor(dy));
+};
+
 var start = function(){
     var animate = function() {
         for (var i = 0 ; i < balls.length ; i++) {
@@ -118,14 +129,8 @@ var start = function(){
 var main = function() {
 
     for (var i = 0 ; i < 10 ; i++) {
-        var dx = Math.random() < 0.5 ? -Math.random() * max_v : Math.random() * max_v;
-        var dy = Math.random() < 0.5 ? -Math.random() * max_v : Math.random() * max_v;
-        balls[i] = make_ball(Math.floor(Math.random() * width),
-                             Math.floor(Math.random() * height),
-                             Math.floor(Math.random() * max_r),
-                             getRandomColor(),
-                             Math.floor(dx),
-                             Math.floor(dy));
+	make_random_ball(Math.floor(Math.random() * width),
+			 Math.floor(Math.random() * height));
     }
 
     start();
@@ -147,7 +152,9 @@ stopButton.addEventListener('click',stop);
 clearButton.addEventListener('click',clear);
 main();
 
+/*
 var click_for_ball = function(e){
     e.preventDefault();
     make_ball(e.offsetX,e.offsetY,
 };
+*/
