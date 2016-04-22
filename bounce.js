@@ -80,7 +80,8 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
                     //dy = (2 * other.getr() / (getr() + other.getr())) * other.getdy() - (other.getr() - getr()) * dy / (other.getr() + getr());
                     dx = -1 * dx;
                     dy = -1 * dy;
-            }
+                    dx = (dx * (getr() - other.getr()) + 2 * other.getr() * other.getdx())
+                }
             }
         }
 
@@ -90,8 +91,8 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
     };
 
     var click_delete = function(e){
-	e.preventDefault();
-	svg.removeChild(this);
+        e.preventDefault();
+        svg.removeChild(this);
     };
     c.addEventListener("click",click_delete);
 
@@ -142,7 +143,7 @@ var stop = function(){
 
 var clear = function(){
     while (svg.lastChild){
-	svg.removeChild(svg.lastChild);
+        svg.removeChild(svg.lastChild);
     }
     //svg.selectAll("*").remove();
 };
@@ -156,6 +157,7 @@ main();
 var click_for_ball = function(e){
     e.preventDefault();
     make_random_ball(e.offsetX,e.offsetY);
+
 };
 
 svg.addEventListener('click',click_for_ball);
