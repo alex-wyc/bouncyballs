@@ -149,5 +149,5 @@ main();
 
 var click_for_ball = function(e){
     e.preventDefault();
-    
+    make_ball(e.offsetX,e.offsetY,
 };
