@@ -162,6 +162,7 @@ var make_ball = function(xi, yi, ri, colori, dxi, dyi) {
         setdy : setdy,
         getcolor : getcolor,
         setcolor: setcolor,
+        canvas_element : c,
     };
 }
 
@@ -254,11 +255,18 @@ var half_speed = function() {
 
 var kill_the_weak = function(minr) {
     balls = balls.filter(function(ball) {
-        console.log(ball.getr());
-        return ball.getr() < minr;
-    })
-    console.log(balls);
+        if (ball.getr() <= minr) {
+            svg.removeChild(ball.canvas_element);
+        }
+        return ball.getr() > minr;
+    });
 }
 
 svg.addEventListener('click',click_for_ball);
 
+document.getElementById('double').addEventListener('click', double_speed);
+document.getElementById('half').addEventListener('click', half_speed);
+document.getElementById('eliminate').addEventListener('click', function() {
+    var minr = parseInt(document.getElementById('size').value, 10);
+    kill_the_weak(minr);
+});
